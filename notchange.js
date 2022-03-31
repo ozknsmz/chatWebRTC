@@ -8,6 +8,7 @@ var getanswer;
 var finalAnswer;
 
 var lc;
+var rc;
 var dc;
 const signaling = new BroadcastChannel("webrtc");
 signaling.onmessage = (e) => {
@@ -42,58 +43,42 @@ async function getoffer() {
     console.log(lc.localDescription);
   };
   lc.createOffer()
-    .then(async (offer) => {
-      return lc.setLocalDescription(offer);
-    })
-    .then(function () {
-      return new Promise(function (resolve) {
-        if (lc.iceGatheringState === "complete") {
-          resolve();
-        } else {
-          function checkState() {
-            if (lc.iceGatheringState === "complete") {
-              lc.removeEventListener("icegatheringstatechange", checkState);
-              resolve();
-            }
-          }
-          lc.addEventListener("icegatheringstatechange", checkState);
-        }
-      });
-    })
-    .then(function () {
-      var offer = lc.localDescription;
+    .then((offer) => {
+      lc.setLocalDescription(offer);
       console.log(offer);
       signaling.postMessage({ type: "offer", sdp: offer.sdp });
+    })
+    .then((answer) => {
+      console.log("set successfully");
     });
 }
 
-async function createanswer(offer) {
-  lc = new RTCPeerConnection();
-  lc.onicecandidate = (e) => {
-    console.log("created offered");
+function createanswer(offer) {
+  rc = new RTCPeerConnection();
+  rc.onicecandidate = (e) => {
+    console.log(JSON.stringify(rc.localDescription));
   };
 
-  lc.ondatachannel = (e) => {
+  rc.ondatachannel = (e) => {
     console.log("here");
     console.log(e);
-    lc.dc = e.channel;
-    lc.dc.onmessage = (e) => {
+    rc.dc = e.channel;
+    rc.dc.onmessage = (e) => {
       console.log("new message from client " + e.data);
     };
-    lc.dc.onopen = (e) => {
+    rc.dc.onopen = (e) => {
       console.log("Connection OPENED!");
     };
   };
-  lc.setRemoteDescription(offer).then((answer) => {
+  rc.setRemoteDescription(offer).then((answer) => {
     console.log("offer set");
   });
 
-  await lc
-    .createAnswer()
-    .then(async (answer) => {
+  rc.createAnswer()
+    .then((answer) => {
       console.log(answer);
-      await lc.setLocalDescription(answer);
-      console.log(lc.setLocalDescription);
+      rc.setLocalDescription(answer);
+      console.log(rc.setLocalDescription);
       signaling.postMessage({ type: "answer", sdp: answer.sdp });
     })
     .then((answer) => {
@@ -101,6 +86,8 @@ async function createanswer(offer) {
     });
 }
 
-async function connect(e) {
-  await lc.setRemoteDescription({ type: "answer", sdp: e.sdp });
+function connect(e) {
+  const t = JSON.stringify(e);
+  console.log(JSON.stringify({ type: "answer", sdp: e.sdp }));
+  lc.setRemoteDescription({ type: "answer", sdp: e.sdp });
 }
