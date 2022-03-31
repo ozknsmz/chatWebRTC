@@ -28,24 +28,97 @@
 </head>
 
 <body>
-  <h1>webrtc without signaling server demo.</h1>
-
-  <div id="chatlog" class="chatlog"></div>
-  <input id="chatinput" type="text"  placeholder="type here" >
-  <button id="chatbutton"  onclick="send()" >send</button>
-
-<div id="container">
+  <div id="container">
     <h3>Peer 1 </h3>
     <button id="create-offer" onclick="getoffer()">connect</button>
 </div>
+
+  <h2>Chat Messages</h2>
+
+<div class="container">
+  <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" >
+  <p id="lc-text"></p>
+  <span class="time-right">11:00</span>
+</div>
+
+<div class="container darker">
+  <img src="https://www.w3schools.com/w3images/avatar6.png" alt="Avatar" class="right" >
+  <p>Hey! I'm fine. Thanks for asking!</p>
+  <span class="time-left">11:01</span>
+</div>
+
+<textarea rows="4" cols="50" name="comment" form="usrform">
+ </textarea>
+  <button id="chatbutton"  onclick="send()" >send</button>
+
+
   <script src="main.js"></script>
 
 </body>
 
 
 <style>
-    h3{
-        color: red;
-    }
+
+textarea{
+  border: 1px solid grey;
+  border-radius:   10px;
+}
+
+img {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}  
+body {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+
+.container {
+  border: 2px solid #dedede;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.darker {
+  border-color: #ccc;
+  background-color: #ddd;
+}
+
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.container img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+.container img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+
+.time-right {
+  float: right;
+  color: #aaa;
+}
+
+.time-left {
+  float: left;
+  color: #999;
+}
+    
 </style>
 </html>

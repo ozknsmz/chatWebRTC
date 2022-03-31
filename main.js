@@ -2,7 +2,10 @@ const offerBtn = document.getElementById("create-offer");
 const asnwerBtn = document.getElementById("create-answer");
 const sendbtn = document.getElementById("chatbutton");
 
-textelement = document.getElementById("textoffer");
+lctext = document.getElementById("lc-text");
+rctext = document.getElementById("lc-text");
+const txt = "";
+
 var getOffer;
 var getanswer;
 var finalAnswer;
@@ -32,7 +35,8 @@ async function getoffer() {
   lc = new RTCPeerConnection();
   dc = lc.createDataChannel("channel");
   dc.onmessage = (e) => {
-    console.log("just got a message" + e.data);
+    txt = e.data;
+    lctext.value = txt;
   };
   dc.onopen = (e) => {
     console.log("Connection opened!");
